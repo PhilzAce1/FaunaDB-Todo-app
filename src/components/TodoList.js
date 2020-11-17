@@ -1,39 +1,38 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { Container, ListGroup, ListGroupItem, Button } from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { connect } from 'react-redux';
 import { getItems, deleteItem } from '../actions/itemAction';
 import UpdateItemModal from './updateItemModal';
-import PropTypes from 'prop-types';
 
-class ShoppingList extends Component {
-  static propTypes = {
-    getItems: PropTypes.func.isRequired,
-    item: PropTypes.object.isRequired,
+function ShoppingList(props) {
+  const {
+    getItems,
+    deleteItem,
+    item: { items },
+  } = props;
+  useEffect(() => {
+    getItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items.length]);
+
+  const onDeleteClick = (id) => {
+    deleteItem(id);
   };
 
-  componentDidMount() {
-    this.props.getItems();
-  }
-
-  onDeleteClick = (id) => {
-    this.props.deleteItem(id);
-  };
-
-  render() {
-    const { items } = this.props.item;
-    return (
-      <Container>
-        <ListGroup>
-          <TransitionGroup className="shopping-list">
-            {items.map(({ id, name }) => (
+  return (
+    <Container>
+      <ListGroup>
+        <TransitionGroup className="shopping-list">
+          {items.map(({ id, name }) => {
+            return (
               <CSSTransition key={id} timeout={500} classNames="fade">
                 <ListGroupItem>
                   <Button
                     className="remove-btn"
                     color="danger"
                     size="sm"
-                    onClick={this.onDeleteClick.bind(this, id)}
+                    onClick={() => onDeleteClick(id)}
                   >
                     &times;
                   </Button>
@@ -41,12 +40,12 @@ class ShoppingList extends Component {
                   {name}
                 </ListGroupItem>
               </CSSTransition>
-            ))}
-          </TransitionGroup>
-        </ListGroup>
-      </Container>
-    );
-  }
+            );
+          })}
+        </TransitionGroup>
+      </ListGroup>
+    </Container>
+  );
 }
 
 const mapStateToProps = (state) => ({
