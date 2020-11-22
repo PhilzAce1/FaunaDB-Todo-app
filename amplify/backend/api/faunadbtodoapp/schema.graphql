@@ -1,4 +1,5 @@
 type Todo @model {
   id: ID!
   name: String!
+  completed: Boolean
 }

@@ -6,7 +6,7 @@ export async function CreateTodo(name) {
       data: { createTodo: createTodoData },
     } = await API.graphql(
       graphqlOperation(createTodo, {
-        input: { name },
+        input: { name, completed: false },
       })
     );
     return createTodoData;
@@ -21,6 +21,16 @@ export async function UpdateTodo(id, name) {
   } = await API.graphql(
     graphqlOperation(updateTodo, {
       input: { id, name },
+    })
+  );
+  return updatedTodo;
+}
+export async function MarkAsComplete(id, completed) {
+  const {
+    data: { updateTodo: updatedTodo },
+  } = await API.graphql(
+    graphqlOperation(updateTodo, {
+      input: { id, completed },
     })
   );
   return updatedTodo;

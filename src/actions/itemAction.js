@@ -5,15 +5,11 @@ import {
   DELETE_ITEM,
   ITEMS_LOADING,
   UPDATE_ITEM,
+  MARK_AS_COMPLETED,
 } from './types';
 
 //-------------------SERVER ACTIONS --------------------------------------
-import {
-  CreateTodo,
-  DeleteTodo,
-  GetAllTodo,
-  UpdateTodo,
-} from '../server/index';
+import { GetAllTodo } from '../server/index';
 
 /**==================== ACTION S===================================== */
 export const getItems = () => (dispatch) => {
@@ -27,36 +23,31 @@ export const getItems = () => (dispatch) => {
 };
 
 export const addItem = (item) => (dispatch, getState) => {
-  CreateTodo(item.name).then((res) => {
-    dispatch({
-      type: ADD_ITEM,
-      payload: item,
-    });
+  dispatch({
+    type: ADD_ITEM,
+    payload: item,
   });
 };
 
 export const updateItem = (data) => (dispatch) => {
-  const { id, name } = data;
-  UpdateTodo(id, name)
-    .then((res) => {
-      dispatch({
-        type: UPDATE_ITEM,
-        payload: res,
-      });
-    })
-    .catch(console.error);
+  dispatch({
+    type: UPDATE_ITEM,
+    payload: data,
+  });
 };
 export const deleteItem = (id) => (dispatch, getState) => {
-  DeleteTodo(id)
-    .then((res) => {
-      dispatch({
-        type: DELETE_ITEM,
-        payload: res,
-      });
-    })
-    .catch(console.log);
+  dispatch({
+    type: DELETE_ITEM,
+    payload: id,
+  });
 };
 
+export const markAsCompleted = (data) => (dispatch) => {
+  dispatch({
+    type: MARK_AS_COMPLETED,
+    payload: data,
+  });
+};
 export const setItemsLoading = () => {
   return {
     type: ITEMS_LOADING,

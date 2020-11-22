@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
-import { Container, ListGroup, ListGroupItem, Button } from 'reactstrap';
+import { Container, ListGroup, ListGroupItem } from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { connect } from 'react-redux';
-import { getItems, deleteItem } from '../actions/itemAction';
+import { getItems } from '../actions/itemAction';
+import DeleteButton from './DeleteButton';
 import UpdateItemModal from './updateItemModal';
+import CompleteTask from './CompleteTask';
 
-function ShoppingList(props) {
+function TodoList(props) {
   const {
     getItems,
-    deleteItem,
     item: { items },
   } = props;
   useEffect(() => {
@@ -16,26 +17,16 @@ function ShoppingList(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items.length]);
 
-  const onDeleteClick = (id) => {
-    deleteItem(id);
-  };
-
   return (
     <Container>
       <ListGroup>
         <TransitionGroup className="shopping-list">
-          {items.map(({ id, name }) => {
+          {items.map(({ id, name, completed }, index) => {
             return (
-              <CSSTransition key={id} timeout={500} classNames="fade">
+              <CSSTransition key={index} timeout={500} classNames="fade">
                 <ListGroupItem>
-                  <Button
-                    className="remove-btn"
-                    color="danger"
-                    size="sm"
-                    onClick={() => onDeleteClick(id)}
-                  >
-                    &times;
-                  </Button>
+                  <DeleteButton id={id} />
+                  <CompleteTask completed={completed} id={id} />
                   <UpdateItemModal id={id} />
                   {name}
                 </ListGroupItem>
@@ -52,4 +43,4 @@ const mapStateToProps = (state) => ({
   item: state.item,
 });
 
-export default connect(mapStateToProps, { getItems, deleteItem })(ShoppingList);
+export default connect(mapStateToProps, { getItems })(TodoList);

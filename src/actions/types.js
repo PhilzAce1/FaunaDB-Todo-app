@@ -5,3 +5,4 @@ export const ITEMS_LOADING = 'ITEMS_LOADING';
 export const UPDATE_ITEM = 'UPDATE_USER';
 export const GET_ERRORS = 'GET_ERRORS';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
+export const MARK_AS_COMPLETED = 'MARK_AS_COMPLETED';
