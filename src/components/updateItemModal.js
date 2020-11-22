@@ -11,15 +11,42 @@ import {
 } from 'reactstrap';
 import { connect } from 'react-redux';
 import { updateItem } from '../actions/itemAction';
+import { API, graphqlOperation } from 'aws-amplify';
 
+const updateTodo = /* GraphQL */ `
+  mutation UpdateTodo(
+    $input: UpdateTodoInput!
+    $condition: ModelTodoConditionInput
+  ) {
+    updateTodo(input: $input, condition: $condition) {
+      id
+      name
+      completed
+    }
+  }
+`;
 function UpdateItemModal(props) {
   const [name, setName] = useState('');
   const [modal, setModal] = useState(false);
-  function onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
-    console.log(name);
-    props.updateItem({ name, id: props.id });
-    setModal(!modal);
+
+    try {
+      const data = await API.graphql(
+        graphqlOperation(updateTodo, {
+          input: {
+            name,
+          },
+        })
+      );
+      const {
+        data: { updateTodo: updatedTodo },
+      } = data;
+      props.updateItem(updatedTodo);
+      setModal(!modal);
+    } catch (error) {
+      console.log(error);
+    }
   }
   function onChange(e) {
     setName(e.target.value);

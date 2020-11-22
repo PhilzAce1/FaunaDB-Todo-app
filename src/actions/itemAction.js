@@ -1,17 +1,24 @@
+/**=====================ACTION TYPES========================== */
 import {
   GET_ITEMS,
   ADD_ITEM,
   DELETE_ITEM,
   ITEMS_LOADING,
   UPDATE_ITEM,
+  MARK_AS_COMPLETED,
 } from './types';
 
+//-------------------SERVER ACTIONS --------------------------------------
+import { GetAllTodo } from '../server/index';
+
+/**==================== ACTION S===================================== */
 export const getItems = () => (dispatch) => {
   dispatch(setItemsLoading());
-
-  dispatch({
-    type: GET_ITEMS,
-    payload: [],
+  GetAllTodo().then((res) => {
+    dispatch({
+      type: GET_ITEMS,
+      payload: res,
+    });
   });
 };
 
@@ -35,6 +42,12 @@ export const deleteItem = (id) => (dispatch, getState) => {
   });
 };
 
+export const markAsCompleted = (data) => (dispatch) => {
+  dispatch({
+    type: MARK_AS_COMPLETED,
+    payload: data,
+  });
+};
 export const setItemsLoading = () => {
   return {
     type: ITEMS_LOADING,

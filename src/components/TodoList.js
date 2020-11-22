@@ -1,56 +1,46 @@
-import React, { Component } from 'react';
-import { Container, ListGroup, ListGroupItem, Button } from 'reactstrap';
+import React, { useEffect } from 'react';
+import { Container, ListGroup, ListGroupItem } from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { connect } from 'react-redux';
-import { getItems, deleteItem } from '../actions/itemAction';
+import { getItems } from '../actions/itemAction';
+import DeleteButton from './DeleteButton';
 import UpdateItemModal from './updateItemModal';
-import PropTypes from 'prop-types';
+import CompleteTask from './CompleteTask';
 
-class ShoppingList extends Component {
-  static propTypes = {
-    getItems: PropTypes.func.isRequired,
-    item: PropTypes.object.isRequired,
-  };
+function TodoList(props) {
+  const {
+    getItems,
+    item: { items },
+  } = props;
+  useEffect(() => {
+    getItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items.length]);
 
-  componentDidMount() {
-    this.props.getItems();
-  }
-
-  onDeleteClick = (id) => {
-    this.props.deleteItem(id);
-  };
-
-  render() {
-    const { items } = this.props.item;
-    return (
-      <Container>
-        <ListGroup>
-          <TransitionGroup className="shopping-list">
-            {items.map(({ id, name }) => (
-              <CSSTransition key={id} timeout={500} classNames="fade">
+  return (
+    <Container>
+      <ListGroup>
+        <TransitionGroup className="shopping-list">
+          {items.map(({ id, name, completed }, index) => {
+            return (
+              <CSSTransition key={index} timeout={500} classNames="fade">
                 <ListGroupItem>
-                  <Button
-                    className="remove-btn"
-                    color="danger"
-                    size="sm"
-                    onClick={this.onDeleteClick.bind(this, id)}
-                  >
-                    &times;
-                  </Button>
+                  <DeleteButton id={id} />
+                  <CompleteTask completed={completed} id={id} />
                   <UpdateItemModal id={id} />
                   {name}
                 </ListGroupItem>
               </CSSTransition>
-            ))}
-          </TransitionGroup>
-        </ListGroup>
-      </Container>
-    );
-  }
+            );
+          })}
+        </TransitionGroup>
+      </ListGroup>
+    </Container>
+  );
 }
 
 const mapStateToProps = (state) => ({
   item: state.item,
 });
 
-export default connect(mapStateToProps, { getItems, deleteItem })(ShoppingList);
+export default connect(mapStateToProps, { getItems })(TodoList);
