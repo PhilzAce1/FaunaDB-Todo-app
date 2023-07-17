@@ -4,6 +4,7 @@ import {
   DELETE_ITEM,
   ITEMS_LOADING,
   UPDATE_ITEM,
+  MARK_AS_COMPLETED,
 } from '../actions/types';
 
 const initialState = {
@@ -19,6 +20,15 @@ export default function ItemReducer(state = initialState, action) {
         items: action.payload,
         loading: false,
       };
+    case MARK_AS_COMPLETED: {
+      return {
+        ...state,
+        items: state.items.map((item) =>
+          item.id === action.payload.id ? action.payload : item
+        ),
+        loading: false,
+      };
+    }
     case UPDATE_ITEM:
       return {
         ...state,
